@@ -2,10 +2,13 @@ package com.ambulatorio.klebersantana.ambulatorio.DAO;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.ambulatorio.klebersantana.ambulatorio.Models.Paciente;
+
+import java.util.ArrayList;
 
 /**
  * Created by Kleber Santana on 03/05/2018.
@@ -60,5 +63,29 @@ public class PacienteDao extends SQLiteOpenHelper{
         retornoDB = getWritableDatabase().insert(TABELA, null, values);
 
         return retornoDB;
+    }
+
+    public ArrayList<Paciente> selecionarPacientes(){
+        String[] colunas = {ID, NOME, DOENCA, MEDICACAO, DATA, CUSTO};
+
+        Cursor cursor = getWritableDatabase().query(TABELA, colunas, null, null, null, null, null, null);
+
+        ArrayList<Paciente> lista = new ArrayList<Paciente>();
+
+        while(cursor.moveToNext()){
+            Paciente p = new Paciente();
+
+            p.setId(cursor.getInt(0));
+            p.setNome(cursor.getString(1));
+            p.setDoenca(cursor.getString(2));
+            p.setMedicacaoUtilizada(cursor.getString(3));
+            p.setDataChegada(cursor.getString(4));
+            p.setCusto(cursor.getDouble(5));
+
+            lista.add(p);
+        }
+
+        return lista;
+
     }
 }

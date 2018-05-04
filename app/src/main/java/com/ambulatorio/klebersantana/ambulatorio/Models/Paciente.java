@@ -6,11 +6,20 @@ package com.ambulatorio.klebersantana.ambulatorio.Models;
 
 public class Paciente {
 
+    private int id;
     private String nome;
     private String doenca;
     private String medicacaoUtilizada;
     private String dataChegada;
     private double custo;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
@@ -50,5 +59,10 @@ public class Paciente {
 
     public void setCusto(double custo) {
         this.custo = custo;
+    }
+
+    @Override
+    public String toString() {
+        return nome.toString();
     }
 }

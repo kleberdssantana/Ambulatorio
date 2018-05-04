@@ -29,7 +29,7 @@ public class PacienteActivity extends AppCompatActivity {
         paciente = new Paciente();
         pacienteDao = new PacienteDao(PacienteActivity.this);
 
-        nomePaciente = findViewById(R.id.nome_pacienteId);
+        nomePaciente = (EditText) findViewById(R.id.nome_pacienteId);
         doenca = findViewById(R.id.doenca);
         medicacao = findViewById(R.id.medicacao);
         custo = (EditText) findViewById(R.id.custo);
@@ -45,7 +45,7 @@ public class PacienteActivity extends AppCompatActivity {
         salvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                paciente.setNome(nomePaciente.toString());
+                paciente.setNome(nomePaciente.getText().toString());
                 paciente.setDoenca(doenca.toString());
                 paciente.setMedicacaoUtilizada(medicacao.toString());
                 paciente.setDataChegada(data.toString());
