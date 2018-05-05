@@ -11,11 +11,7 @@ public class MaskWatcher implements TextWatcher {
     public MaskWatcher(String mask) {
         this.mask = mask;
     }
-
-    public static MaskWatcher buildCpf() {
-        return new MaskWatcher("###.###.###-##");
-    }
-
+    
     @Override
     public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
         isDeleting = count > after;
