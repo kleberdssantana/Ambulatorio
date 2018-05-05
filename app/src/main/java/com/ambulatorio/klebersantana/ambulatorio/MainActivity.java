@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog.Builder dialog;
 
     private int itemListId;
+    private boolean flag = true;
 
     public int getItemListId() {
         return itemListId;
@@ -84,19 +85,20 @@ public class MainActivity extends AppCompatActivity {
                 dialog.setNegativeButton("Não", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        flag = true;
                     }
                 });
                 dialog.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        flag = true;
                         long retorno;
                         paciente = adapter.getItem(getItemListId());
                         retorno = pacienteDao.excluirPaciente(paciente);
 
-                        if(retorno != -1) {
+                        if (retorno != -1) {
                             alert("Paciente excluído com sucesso");
-                        }else{
+                        } else {
                             alert("Não foi possível excluír o paciente");
                         }
                         populaListView("");
@@ -105,7 +107,8 @@ public class MainActivity extends AppCompatActivity {
 
                 dialog.create();
                 dialog.show();
-                return false;
+                flag = false;
+                return flag;
             }
         });
 
@@ -118,18 +121,18 @@ public class MainActivity extends AppCompatActivity {
         pacienteDao.close();
 
         if (lista != null) {
-
-            adapter = new ArrayAdapter<Paciente>(this, R.layout.item, R.id.textView, listaPaciente);
+            adapter = new ArrayAdapter<Paciente>(MainActivity.this, android.R.layout.simple_list_item_1, listaPaciente);
             lista.setAdapter(adapter);
 
             lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                     paciente = adapter.getItem(position);
-
-                    Intent intent = new Intent(MainActivity.this, PacienteActivity.class);
-                    intent.putExtra("paciente-enviado", paciente);
-                    startActivity(intent);
+                    if(flag) {
+                        Intent intent = new Intent(MainActivity.this, PacienteActivity.class);
+                        intent.putExtra("paciente-enviado", paciente);
+                        startActivity(intent);
+                    }
                 }
             });
         }
@@ -142,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         populaListView("");
     }
 
-    private void alert(String s){
+    private void alert(String s) {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 }
