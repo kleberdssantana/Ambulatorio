@@ -30,6 +30,7 @@ public class PacienteDao extends SQLiteOpenHelper {
         super(context, NOME_BANCO, null, VERSION);
     }
 
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = "CREATE TABLE IF NOT EXISTS " + TABELA + " ( " +
@@ -73,7 +74,7 @@ public class PacienteDao extends SQLiteOpenHelper {
         values.put(DOENCA, paciente.getDoenca());
         values.put(MEDICACAO, paciente.getMedicacaoUtilizada());
         values.put(DATA, paciente.getDataChegada());
-//        values.put(CUSTO, paciente.getCusto());
+        values.put(CUSTO, paciente.getCusto());
 
         String[] args = {String.valueOf(paciente.getId())};
         retornoDB = getWritableDatabase().update(TABELA, values, "id=?", args);

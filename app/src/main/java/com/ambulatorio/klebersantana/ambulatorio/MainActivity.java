@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         pacienteDao.close();
 
         if (lista != null) {
-            adapter = new ArrayAdapter<Paciente>(MainActivity.this, android.R.layout.simple_list_item_1, listaPaciente);
+            adapter = new ArrayAdapter<Paciente>(MainActivity.this, R.layout.item, R.id.textView, listaPaciente);
             lista.setAdapter(adapter);
 
             lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
