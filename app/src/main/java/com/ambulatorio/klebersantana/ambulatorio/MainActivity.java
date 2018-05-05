@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ambulatorio.klebersantana.ambulatorio.DAO.PacienteDao;
 import com.ambulatorio.klebersantana.ambulatorio.Models.Paciente;
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     PacienteDao pacienteDao;
     ArrayList<Paciente> listaPaciente;
     ArrayAdapter<Paciente> adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+//        lista.setLongClickable(true);
+//        lista.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+//
+//                deletaPaciente();
+//                return true;
+//            }
+//        });
+
+
     }
 
     public void populaListView(){
@@ -51,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 
     @Override
     protected void onResume() {

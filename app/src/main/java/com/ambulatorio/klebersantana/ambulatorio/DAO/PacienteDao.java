@@ -65,10 +65,18 @@ public class PacienteDao extends SQLiteOpenHelper{
         return retornoDB;
     }
 
+    public void deletaPaciente(Paciente paciente){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABELA, ID + "= ?", new String[] {String.valueOf(paciente.getId())});
+        db.close();
+
+    }
+
     public ArrayList<Paciente> selecionarPacientes(){
         String[] colunas = {ID, NOME, DOENCA, MEDICACAO, DATA, CUSTO};
 
-        Cursor cursor = getWritableDatabase().query(TABELA, colunas, null, null, null, null, null, null);
+        Cursor cursor = getReadableDatabase().query(TABELA, colunas, null, null, null, null, null, null);
 
         ArrayList<Paciente> lista = new ArrayList<Paciente>();
 
