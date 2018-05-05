@@ -88,10 +88,15 @@ public class PacienteDao extends SQLiteOpenHelper {
         return retornoDB;
     }
 
-    public ArrayList<Paciente> selecionarPacientes() {
+    public ArrayList<Paciente> selecionarPacientes(String filtro) {
         String[] colunas = {ID, NOME, DOENCA, MEDICACAO, DATA, CUSTO};
+        String consulta = null;
+        if(!filtro.isEmpty()){
+            consulta = "nome LIKE '%"+filtro+"%'";
+        }
 
-        Cursor cursor = getReadableDatabase().query(TABELA, colunas, null, null, null, null, ID + " DESC", null);
+
+        Cursor cursor = getReadableDatabase().query(TABELA, colunas, consulta, null, null, null, ID + " DESC", null);
 
         ArrayList<Paciente> lista = new ArrayList<Paciente>();
 

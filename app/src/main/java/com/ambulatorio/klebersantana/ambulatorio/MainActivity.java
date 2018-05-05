@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.ambulatorio.klebersantana.ambulatorio.DAO.PacienteDao;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     PacienteDao pacienteDao;
     ArrayList<Paciente> listaPaciente;
     ArrayAdapter<Paciente> adapter;
+    private SearchView botaoPesquisar;
 
     private AlertDialog.Builder dialog;
 
@@ -46,12 +48,27 @@ public class MainActivity extends AppCompatActivity {
 
         novoCadastro = findViewById(R.id.btn_novo_cadastro);
         lista = findViewById(R.id.listViewId);
+        botaoPesquisar = findViewById(R.id.btn_pesquisar);
 
         novoCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, PacienteActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        botaoPesquisar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                populaListView(s);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+
+                return false;
             }
         });
 
@@ -82,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                         }else{
                             alert("Não foi possível excluír o paciente");
                         }
-                        populaListView();
+                        populaListView("");
                     }
                 });
 
@@ -94,10 +111,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void populaListView() {
+    public void populaListView(String filtro) {
         pacienteDao = new PacienteDao(MainActivity.this);
 
-        listaPaciente = pacienteDao.selecionarPacientes();
+        listaPaciente = pacienteDao.selecionarPacientes(filtro);
         pacienteDao.close();
 
         if (lista != null) {
@@ -121,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        populaListView();
+        populaListView("");
     }
 
     private void alert(String s){
