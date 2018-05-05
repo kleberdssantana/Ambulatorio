@@ -54,6 +54,7 @@
         android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="Data do atendimento"
+        android:inputType="number|text"
         android:textColorHint="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

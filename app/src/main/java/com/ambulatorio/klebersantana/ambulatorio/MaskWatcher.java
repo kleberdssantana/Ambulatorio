@@ -11,7 +11,7 @@ public class MaskWatcher implements TextWatcher {
     public MaskWatcher(String mask) {
         this.mask = mask;
     }
-    
+
     @Override
     public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
         isDeleting = count > after;
