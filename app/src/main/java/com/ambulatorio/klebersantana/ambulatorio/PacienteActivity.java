@@ -61,28 +61,41 @@ public class PacienteActivity extends AppCompatActivity {
         salvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String newCusto = custo.getText().toString();
+                if(newCusto.isEmpty()){
+                    newCusto = "0";
+                }
+
                 paciente.setNome(nomePaciente.getText().toString());
                 paciente.setDoenca(doenca.getText().toString());
                 paciente.setMedicacaoUtilizada(medicacao.getText().toString());
                 paciente.setDataChegada(data.getText().toString());
-                paciente.setCusto(Double.parseDouble(custo.getText().toString()));
+                paciente.setCusto(Double.parseDouble(newCusto));
 
-                if(salvar.getText().equals("Salvar")){
-                    retornoDB = pacienteDao.salvarPaciente(paciente);
-                    if(retornoDB == -1){
-                        alert("Erro ao cadastrar");
-                    }else{
-                        alert("Salvo com sucesso");
-                    }
+                if(nomePaciente.getText().toString().isEmpty() || doenca.getText().toString().isEmpty()
+                        || medicacao.getText().toString().isEmpty() || data.getText().toString().isEmpty()){
+                    alert("Favor preencher os campos deste formulário");
                 }else{
-                    retornoDB = pacienteDao.atualizarPaciente(paciente);
-                    if(retornoDB == -1){
-                        alert("Erro ao atualizar");
+                    if(salvar.getText().equals("Salvar")){
+                        retornoDB = pacienteDao.salvarPaciente(paciente);
+                        if(retornoDB == -1){
+                            alert("Erro ao cadastrar");
+                        }else{
+                            alert("Salvo com sucesso");
+                        }
                     }else{
-                        alert("Atualizado com sucesso");
+                        retornoDB = pacienteDao.atualizarPaciente(paciente);
+                        if(retornoDB == -1){
+                            alert("Erro ao atualizar");
+                        }else{
+                            alert("Atualizado com sucesso");
+                        }
                     }
+                    finish();
+
                 }
-                finish();
+
+
             }
         });
 
