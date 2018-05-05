@@ -1,6 +1,8 @@
 package com.ambulatorio.klebersantana.ambulatorio;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +26,18 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Paciente> listaPaciente;
     ArrayAdapter<Paciente> adapter;
 
+    private AlertDialog.Builder dialog;
+
+    private int itemListId;
+
+    public int getItemListId() {
+        return itemListId;
+    }
+
+    public void setItemListId(int itemListId) {
+        this.itemListId = itemListId;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,37 +55,76 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        lista.setLongClickable(true);
-//        lista.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-//
-//                deletaPaciente();
-//                return true;
-//            }
-//        });
+        lista.setLongClickable(true);
+        lista.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                dialog = new AlertDialog.Builder(MainActivity.this);
+                dialog.setTitle("Exclusão de registro");
+                dialog.setMessage("Deseja realmente excluir este paciente");
+                dialog.setIcon(android.R.drawable.ic_delete);
+                setItemListId(position);
+                dialog.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
+                    }
+                });
+                dialog.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        long retorno;
+                        paciente = adapter.getItem(getItemListId());
+                        retorno = pacienteDao.excluirPaciente(paciente);
+
+                        if(retorno != -1) {
+                            alert("Paciente excluído com sucesso");
+                        }else{
+                            alert("Não foi possível excluír o paciente");
+                        }
+                        populaListView();
+                    }
+                });
+
+                dialog.create();
+                dialog.show();
+                return false;
+            }
+        });
 
     }
 
-    public void populaListView(){
+    public void populaListView() {
         pacienteDao = new PacienteDao(MainActivity.this);
 
         listaPaciente = pacienteDao.selecionarPacientes();
         pacienteDao.close();
 
-        if(lista != null){
+        if (lista != null) {
             adapter = new ArrayAdapter<Paciente>(MainActivity.this, android.R.layout.simple_list_item_1, listaPaciente);
             lista.setAdapter(adapter);
+
+            lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                    paciente = adapter.getItem(position);
+
+                    Intent intent = new Intent(MainActivity.this, PacienteActivity.class);
+                    intent.putExtra("paciente-enviado", paciente);
+                    startActivity(intent);
+                }
+            });
         }
 
     }
-
-
 
     @Override
     protected void onResume() {
         super.onResume();
         populaListView();
+    }
+
+    private void alert(String s){
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 }

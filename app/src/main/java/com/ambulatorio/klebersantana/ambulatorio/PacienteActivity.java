@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.ambulatorio.klebersantana.ambulatorio.DAO.PacienteDao;
 import com.ambulatorio.klebersantana.ambulatorio.Models.Paciente;
 
+import java.util.Calendar;
+
 public class PacienteActivity extends AppCompatActivity {
 
     EditText nomePaciente, doenca, medicacao, custo, data;
@@ -30,14 +32,28 @@ public class PacienteActivity extends AppCompatActivity {
         pacienteDao = new PacienteDao(PacienteActivity.this);
 
         nomePaciente = (EditText) findViewById(R.id.nome_pacienteId);
-        doenca = findViewById(R.id.doenca);
-        medicacao = findViewById(R.id.medicacao);
+        doenca = (EditText) findViewById(R.id.doenca);
+        medicacao = (EditText) findViewById(R.id.medicacao);
         custo = (EditText) findViewById(R.id.custo);
-        data = findViewById(R.id.data_atendimento);
-        salvar = findViewById(R.id.salvar);
+        data = (EditText) findViewById(R.id.data_atendimento);
+        data.addTextChangedListener(new MaskWatcher("##/##/####"));
+
+        salvar = (Button) findViewById(R.id.salvar);
+        cancelar = (Button) findViewById(R.id.cancelar);
 
         if(altPaciente != null){
             salvar.setText("Alterar");
+
+            double cust = Double.parseDouble(String.valueOf(altPaciente.getCusto()));
+
+            nomePaciente.setText(altPaciente.getNome());
+            doenca.setText(altPaciente.getDoenca());
+            medicacao.setText(altPaciente.getMedicacaoUtilizada());
+            data.setText(altPaciente.getDataChegada());
+            custo.setText(String.valueOf(cust));
+
+            paciente.setId(altPaciente.getId());
+
         }else{
             salvar.setText("Salvar");
         }
@@ -46,10 +62,10 @@ public class PacienteActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 paciente.setNome(nomePaciente.getText().toString());
-                paciente.setDoenca(doenca.toString());
-                paciente.setMedicacaoUtilizada(medicacao.toString());
-                paciente.setDataChegada(data.toString());
-//                paciente.setCusto(Double.parseDouble(custo));
+                paciente.setDoenca(doenca.getText().toString());
+                paciente.setMedicacaoUtilizada(medicacao.getText().toString());
+                paciente.setDataChegada(data.getText().toString());
+                paciente.setCusto(Double.parseDouble(custo.getText().toString()));
 
                 if(salvar.getText().equals("Salvar")){
                     retornoDB = pacienteDao.salvarPaciente(paciente);
@@ -59,10 +75,22 @@ public class PacienteActivity extends AppCompatActivity {
                         alert("Salvo com sucesso");
                     }
                 }else{
-
+                    retornoDB = pacienteDao.atualizarPaciente(paciente);
+                    if(retornoDB == -1){
+                        alert("Erro ao atualizar");
+                    }else{
+                        alert("Atualizado com sucesso");
+                    }
                 }
-
                 finish();
+            }
+        });
+
+        cancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PacienteActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
 

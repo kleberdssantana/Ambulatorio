@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Created by Kleber Santana on 03/05/2018.
  */
 
-public class PacienteDao extends SQLiteOpenHelper{
+public class PacienteDao extends SQLiteOpenHelper {
 
     private static final String NOME_BANCO = "Ambulatorio.db";
     private static final int VERSION = 1;
@@ -32,25 +32,40 @@ public class PacienteDao extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE IF NOT EXISTS "+ TABELA +" ( " +
-                    " " + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    " " + NOME + " TEXT, " +
-                    " " + DOENCA + " TEXT, " +
-                    " " + MEDICACAO + " TEXT, " +
-                    " " + DATA + " DATE, " +
-                    " " + CUSTO + " FLOAT );";
+        String sql = "CREATE TABLE IF NOT EXISTS " + TABELA + " ( " +
+                " " + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " " + NOME + " TEXT, " +
+                " " + DOENCA + " TEXT, " +
+                " " + MEDICACAO + " TEXT, " +
+                " " + DATA + " DATE, " +
+                " " + CUSTO + " FLOAT );";
 
         db.execSQL(sql);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        String sql = "DROP TABLE IF EXISTS "+ TABELA;
+        String sql = "DROP TABLE IF EXISTS " + TABELA;
         db.execSQL(sql);
         onCreate(db);
     }
 
-    public long salvarPaciente(Paciente paciente){
+    public long salvarPaciente(Paciente paciente) {
+        ContentValues values = new ContentValues();
+        long retornoDB;
+
+        values.put(NOME, paciente.getNome());
+        values.put(DOENCA, paciente.getDoenca());
+        values.put(MEDICACAO, paciente.getMedicacaoUtilizada());
+        values.put(DATA, paciente.getDataChegada());
+        values.put(CUSTO, paciente.getCusto());
+
+        retornoDB = getWritableDatabase().insert(TABELA, null, values);
+
+        return retornoDB;
+    }
+
+    public long atualizarPaciente(Paciente paciente) {
         ContentValues values = new ContentValues();
         long retornoDB;
 
@@ -60,27 +75,27 @@ public class PacienteDao extends SQLiteOpenHelper{
         values.put(DATA, paciente.getDataChegada());
 //        values.put(CUSTO, paciente.getCusto());
 
-        retornoDB = getWritableDatabase().insert(TABELA, null, values);
+        String[] args = {String.valueOf(paciente.getId())};
+        retornoDB = getWritableDatabase().update(TABELA, values, "id=?", args);
 
         return retornoDB;
     }
 
-    public void deletaPaciente(Paciente paciente){
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABELA, ID + "= ?", new String[] {String.valueOf(paciente.getId())});
-        db.close();
-
+    public long excluirPaciente(Paciente paciente){
+        long retornoDB;
+        String[] args = {String.valueOf(paciente.getId())};
+        retornoDB = getWritableDatabase().delete(TABELA, ID + "= ?", args);
+        return retornoDB;
     }
 
-    public ArrayList<Paciente> selecionarPacientes(){
+    public ArrayList<Paciente> selecionarPacientes() {
         String[] colunas = {ID, NOME, DOENCA, MEDICACAO, DATA, CUSTO};
 
-        Cursor cursor = getReadableDatabase().query(TABELA, colunas, null, null, null, null, null, null);
+        Cursor cursor = getReadableDatabase().query(TABELA, colunas, null, null, null, null, ID + " DESC", null);
 
         ArrayList<Paciente> lista = new ArrayList<Paciente>();
 
-        while(cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             Paciente p = new Paciente();
 
             p.setId(cursor.getInt(0));

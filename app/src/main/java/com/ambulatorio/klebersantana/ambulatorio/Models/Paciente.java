@@ -1,10 +1,12 @@
 package com.ambulatorio.klebersantana.ambulatorio.Models;
 
+import java.io.Serializable;
+
 /**
  * Created by Kleber Santana on 03/05/2018.
  */
 
-public class Paciente {
+public class Paciente implements Serializable {
 
     private int id;
     private String nome;
