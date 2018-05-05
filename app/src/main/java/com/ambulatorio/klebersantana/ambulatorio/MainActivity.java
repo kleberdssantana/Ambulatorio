@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-
+                populaListView(s);
                 return false;
             }
         });
